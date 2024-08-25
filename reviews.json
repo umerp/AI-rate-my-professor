@@ -1,0 +1,82 @@
+{
+    "reviews": [
+      {
+        "professor": "Dr. Alice Johnson",
+        "subject": "Introduction to Psychology",
+        "stars": 5,
+        "review": "Dr. Johnson is an excellent professor who makes complex concepts easy to understand. Her lectures are engaging and she is very approachable for help."
+      },
+      {
+        "professor": "Professor Bob Smith",
+        "subject": "Calculus I",
+        "stars": 4,
+        "review": "Professor Smith is knowledgeable and provides clear explanations. However, his assignments can be quite challenging and there is little feedback on grading."
+      },
+      {
+        "professor": "Dr. Clara Nguyen",
+        "subject": "Organic Chemistry",
+        "stars": 3,
+        "review": "Dr. Nguyen's class is informative but can be a bit disorganized. She tends to rush through material and the exams are very difficult."
+      },
+      {
+        "professor": "Dr. David Lee",
+        "subject": "Modern Literature",
+        "stars": 4,
+        "review": "Dr. Lee is passionate about literature and his discussions are always stimulating. The coursework is intensive but rewarding."
+      },
+      {
+        "professor": "Professor Emily Clark",
+        "subject": "Introduction to Computer Science",
+        "stars": 5,
+        "review": "Professor Clark is fantastic! She makes programming accessible and fun. Her labs are very practical and useful for understanding the concepts."
+      },
+      {
+        "professor": "Dr. Fiona Martinez",
+        "subject": "Advanced Calculus",
+        "stars": 2,
+        "review": "Dr. Martinez is a knowledgeable professor but struggles with communication. Her lectures are often difficult to follow and her grading is harsh."
+      },
+      {
+        "professor": "Professor George White",
+        "subject": "Microeconomics",
+        "stars": 4,
+        "review": "Professor White is great at explaining economic theories and their real-world applications. The class is challenging but very rewarding."
+      },
+      {
+        "professor": "Dr. Helen Zhou",
+        "subject": "Biochemistry",
+        "stars": 5,
+        "review": "Dr. Zhou is incredibly knowledgeable and passionate about biochemistry. Her lectures are well-structured and she provides excellent support to students."
+      },
+      {
+        "professor": "Professor Isaac Turner",
+        "subject": "Creative Writing",
+        "stars": 4,
+        "review": "Professor Turner encourages creativity and provides insightful feedback. The course is engaging and offers plenty of opportunities for personal expression."
+      },
+      {
+        "professor": "Dr. Jessica Adams",
+        "subject": "Physics I",
+        "stars": 3,
+        "review": "Dr. Adams is a good teacher but the pace of the course can be too fast. The lectures are often rushed, which makes it hard to grasp some concepts."
+      },
+      {
+        "professor": "Professor Kevin Harris",
+        "subject": "Sociology",
+        "stars": 5,
+        "review": "Professor Harris is excellent at facilitating discussions and making sociology relevant to current events. His passion for the subject is evident and inspiring."
+      },
+      {
+        "professor": "Dr. Laura Kim",
+        "subject": "Introduction to Statistics",
+        "stars": 4,
+        "review": "Dr. Kim explains statistical concepts clearly and provides plenty of practical examples. The course is well-organized and her teaching style is engaging."
+      },
+      {
+        "professor": "Professor Mark Lewis",
+        "subject": "International Relations",
+        "stars": 3,
+        "review": "Professor Lewis is knowledgeable but his lectures can be quite dry. He tends to focus on theory rather than practical applications, which can be a bit dull."
+      }
+    ]
+  }
