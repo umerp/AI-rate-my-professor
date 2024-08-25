@@ -14,48 +14,66 @@ import {
 
 export default function Chatbox() {
   //   const { user, isLoaded } = useUser();
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    {
+      role: 'assistant',
+      content: `Hi! I'm the Rate My Professor support assistant. How can I help you today?`,
+    },
+  ]);
+
+  const [message, setMessage] = useState('')
+
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [fetching, setFetching] = useState(true);
+  const [fetching, setFetching] = useState(false);
 
-  useEffect(() => {
-    const fetchHistory = async () => {
-      const fetchedMessages = await fetchChatHistory();
-      setMessages(fetchedMessages);
-      setFetching(false);
-    };
-    fetchHistory();
-  }, []);
+  // useEffect(() => {
+  //   const fetchHistory = async () => {
+  //     const fetchedMessages = await fetchChatHistory();
+  //     setMessages(fetchedMessages);
+  //     setFetching(false);
+  //   };
+  //   fetchHistory();
+  // }, []);
 
-  const handleSend = async () => {
-    if (input.trim()) {
-      const newMessage = { text: input, type: "user", timestamp: Date.now() };
-      const newMessages = [...messages, newMessage];
-      setMessages(newMessages);
-      setInput("");
+  const sendMessage = async () => {
+    setMessage('')
+    setMessages((messages) => [
+      ...messages,
+      {role: 'user', content: message},
+      {role: 'assistant', content: ''},
+    ])
+  
+    const response = fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify([...messages, {role: 'user', content: message}]),
+    }).then(async (res) => {
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let result = ''
+  
+      return reader.read().then(function processText({done, value}) {
+        if (done) {
+          return result
+        }
+        const text = decoder.decode(value || new Uint8Array(), {stream: true})
+        setMessages((messages) => {
+          let lastMessage = messages[messages.length - 1]
+          let otherMessages = messages.slice(0, messages.length - 1)
+          return [
+            ...otherMessages,
+            {...lastMessage, content: lastMessage.content + text},
+          ]
+        })
+        return reader.read().then(processText)
+      })
+    })
+  }
 
-      await saveMessage(newMessage);
-      setLoading(true);
 
-      const botResponse = await fetchBotResponse(input);
-      const botMessage = {
-        text: botResponse,
-        type: "bot",
-        timestamp: Date.now(),
-      };
-
-      const finalMessages = [...newMessages, botMessage];
-      setMessages(finalMessages);
-      setLoading(false);
-
-      await saveMessage(botMessage);
-    }
-  };
-
-  const handleInputChange = (e) => {
-    setInput(e.target.value);
-  };
 
   return (
     <Container maxWidth="sm">
@@ -71,7 +89,7 @@ export default function Chatbox() {
         }}
       >
         <Typography
-          className={` text-white py-2 font-semibold shadow-md bg-gradient-to-r from-purple-600 to-purple-800 rounded-t-lg`}
+          className="text-white py-2 font-semibold shadow-md bg-gradient-to-r from-purple-600 to-purple-800 rounded-t-lg"
           variant="h5"
           align="center"
           gutterBottom
@@ -79,34 +97,55 @@ export default function Chatbox() {
           Need professor insights? Just ask!
         </Typography>
         <Box
-        className='flex justify-center items-center'
+          className="flex flex-col flex-grow overflow-y-auto mb-4 bg-gray-900 p-3 rounded-lg"
           style={{
-            flexGrow: 1,
-            overflowY: "auto",
-            marginBottom: "1rem",
             backgroundColor: "#1c1c1c", // Darker background inside chatbox
             borderRadius: "8px",
-            
           }}
         >
           {fetching ? (
-            <Loader />
+            <div className="flex justify-center items-center">
+              <Loader />
+            </div>
           ) : (
-            <ChatHistory messages={messages} loading={loading} />
+            messages.map((message, index) => (
+              <Box
+                key={index}
+                display="flex"
+                justifyContent={
+                  message.role === "assistant" ? "flex-start" : "flex-end"
+                }
+                mb={1}
+              >
+                <Box
+                  px={3}
+                  py={2}
+                  borderRadius="16px"
+                  style={{
+                    backgroundColor:
+                      message.role === "assistant" ? "#3f51b5" : "#673ab7",
+                    color: "#ffffff",
+                  }}
+                >
+                  {message.content}
+                </Box>
+              </Box>
+            ))
           )}
         </Box>
-        <MessageInput
-          input={input}
-          handleInputChange={handleInputChange}
-          handleSend={handleSend}
-          className='bg-gray-300'
-          style={{
-            
-            color: "#fff",
-            borderRadius: "8px",
-            border: "1px solid #444", // Slight border to distinguish input
-          }}
-        />
+        <Box className='flex justify-center'>
+          <MessageInput
+            input={message}
+            handleInputChange={(e) => setMessage(e.target.value)}
+            handleSend={sendMessage}
+            className="bg-gray-300 flex-grow"
+            style={{
+              color: "#fff",
+              borderRadius: "8px",
+              border: "1px solid #444", 
+            }}
+          />
+        </Box>
       </Paper>
     </Container>
   );

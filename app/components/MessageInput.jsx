@@ -4,7 +4,7 @@ import SendIcon from "@mui/icons-material/Send";
 
 export default function MessageInput({ input, handleInputChange, handleSend }) {
   return (
-    <Box display="flex">
+    <Box className='flex w-full'>
       <TextField
         variant="outlined"
         fullWidth

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 export const fetchChatHistory = async () => {
   try {
@@ -18,14 +18,3 @@ export const saveMessage = async (message) => {
   }
 };
 
-export const fetchBotResponse = async (lastUserMessage) => {
-  try {
-    const res = await axios.post("/api/sendMessage", {
-      message: lastUserMessage,
-    });
-    return res.data.reply || "Sorry I couldn't process that.";
-  } catch (error) {
-    console.error("Error fetching response:", error);
-    return "Sorry I couldn't process that.";
-  }
-};
