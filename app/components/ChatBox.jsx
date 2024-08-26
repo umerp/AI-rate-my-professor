@@ -9,7 +9,6 @@ import Loader from "./Loader";
 import {
   fetchChatHistory,
   saveMessage,
-  fetchBotResponse,
 } from "../services/chatService";
 
 export default function Chatbox() {
@@ -23,7 +22,6 @@ export default function Chatbox() {
 
   const [message, setMessage] = useState('')
 
-  const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
 
@@ -43,7 +41,6 @@ export default function Chatbox() {
       {role: 'user', content: message},
       {role: 'assistant', content: ''},
     ])
-  
     const response = fetch('/api/chat', {
       method: 'POST',
       headers: {
@@ -84,8 +81,8 @@ export default function Chatbox() {
           height: "75vh",
           display: "flex",
           flexDirection: "column",
-          backgroundColor: "#2e2e2e", // Dark background for chatbox
-          color: "#e0e0e0", // Light text color for readability
+          backgroundColor: "#2e2e2e", 
+          color: "#e0e0e0", 
         }}
       >
         <Typography
@@ -99,7 +96,7 @@ export default function Chatbox() {
         <Box
           className="flex flex-col flex-grow overflow-y-auto mb-4 bg-gray-900 p-3 rounded-lg"
           style={{
-            backgroundColor: "#1c1c1c", // Darker background inside chatbox
+            backgroundColor: "#1c1c1c", 
             borderRadius: "8px",
           }}
         >
