@@ -1,19 +1,20 @@
 import { NextResponse } from 'next/server';
 import {db} from '../../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { auth } from "../../auth";
+import { currentUser, auth } from '@clerk/nextjs/server'
 
 export async function POST(req) {
-    const session = await auth();
+    const { userId } = auth()
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json({ success: false, error: 'User not authenticated' }, { status: 401 });
     }
-
+  
+    const user = await currentUser();
     const { messages } = await req.json();
 
     try {
-      const userChatRef = doc(db, "chats", session.user.email);
+      const userChatRef = doc(db, "chats", user.primaryEmailAddress);
       await setDoc(userChatRef, { messages }, { merge: true });
   
       return NextResponse.json({ success: true }, { status: 200 });
@@ -27,14 +28,16 @@ export async function POST(req) {
   }
 
 export async function GET(req) {
-  const session = await auth();
+  const { userId } = auth()
 
-  if(!session) {
-    return NextResponse.json({ success: false, error: 'User not authenticated' }, { status: 401 });
-  }
+    if (!userId) {
+      return NextResponse.json({ success: false, error: 'User not authenticated' }, { status: 401 });
+    }
+  
+    const user = await currentUser();
 
   try {
-    const userDoc = doc(db, 'chats', session.user.email);
+    const userDoc = doc(db, 'chats', user.primaryEmailAddress);
     const userChat = await getDoc(userDoc);
     
     if (userChat.exists()) {
