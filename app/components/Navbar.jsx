@@ -8,7 +8,9 @@ export default function Navbar() {
         <p className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent cursor-pointer">
           ProfsRated AI
         </p>
-        <UserButton />
+        <div className="ml-2 mt-3 scale-150 ">
+          <UserButton />
+        </div>
       </div>
     </div>
   );

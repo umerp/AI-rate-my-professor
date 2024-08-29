@@ -1,10 +1,11 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import { Container, Paper, Box } from "@mui/material";
+import { Container, Paper, Box, Avatar } from "@mui/material";
 import MessageBubble from "./MessageBubble";
 import MessageInput from "./MessageInput";
 import Loader from "./Loader";
 import { fetchChatHistory, saveMessage } from "../services/chatService";
+import { UserButton } from "@clerk/nextjs";
 
 export default function ChatBox() {
   const [messages, setMessages] = useState([]);
@@ -106,19 +107,19 @@ export default function ChatBox() {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="md">
       <Paper
         elevation={3}
         style={{
-          padding: "1rem",
-          height: "75vh",
+          padding: "1.5rem",
+          height: "80vh",
           display: "flex",
           flexDirection: "column",
           backgroundColor: "#2e2e2e",
           color: "#e0e0e0",
         }}
       >
-        <h2 className="flex justify-center text-white text-2xl py-2 font-semibold shadow-md bg-gradient-to-r from-purple-600 to-purple-800 rounded-t-lg">
+        <h2 className="flex justify-center text-white text-2xl py-2 font-semibold shadow-md bg-gradient-to-r from-purple-700 to-purple-900 rounded-t-lg">
           Need professor insights? Just ask!
         </h2>
         <Box
@@ -135,11 +136,29 @@ export default function ChatBox() {
           ) : (
             <>
               {messages.map((message, index) => (
-                <MessageBubble
-                  message={message}
-                  loading={loading && index === messages.length - 1}
+                <div
                   key={index}
-                />
+                  className={`flex ${
+                    message.role === "assistant"
+                      ? "justify-start"
+                      : "justify-end"
+                  } mb-4`}
+                >
+                  {message.role === "assistant" && (
+                    <Avatar className="mr-2 bg-gradient-to-r from-purple-400 to-purple-600">
+                      PR
+                    </Avatar>
+                  )}
+                  <MessageBubble
+                    message={message}
+                    loading={loading && index === messages.length - 1}
+                  />
+                  {message.role !== "assistant" && (
+                    <div className="ml-2 mt-3 scale-125 pointer-events-none">
+                      <UserButton />
+                    </div>
+                  )}
+                </div>
               ))}
               <div ref={bottomRef} />
             </>

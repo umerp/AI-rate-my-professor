@@ -4,11 +4,11 @@ import SendIcon from "@mui/icons-material/Send";
 
 export default function MessageInput({ input, handleInputChange, handleSend }) {
   return (
-    <Box className='flex w-full'>
+    <Box className="flex w-full">
       <TextField
         variant="outlined"
         fullWidth
-        sx={{ input: { color: "white"}}}
+        sx={{ input: { color: "white" } }}
         value={input}
         onChange={handleInputChange}
         placeholder="Type your message here..."
