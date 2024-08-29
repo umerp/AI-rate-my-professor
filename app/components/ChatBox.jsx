@@ -11,7 +11,7 @@ export default function ChatBox() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
-  const bottomRef = useRef(null); 
+  const bottomRef = useRef(null);
 
   useEffect(() => {
     // Scroll to the bottom (latest message)
@@ -43,11 +43,13 @@ export default function ChatBox() {
   const sendMessage = async () => {
     if (message.trim()) {
       setMessage("");
+      const newMessage = { role: "user", content: message };
       const updatedMessages = [
         ...messages,
-        {role: "user", content: message },
-      ]
-      setMessages(updatedMessages)
+        newMessage,
+        { role: "assistant", content: " " },
+      ];
+      setMessages(updatedMessages);
       setLoading(true);
 
       try {
@@ -64,16 +66,20 @@ export default function ChatBox() {
         }).then(async (res) => {
           const reader = res.body.getReader();
           const decoder = new TextDecoder();
-          const botMessage = { role: "assistant", content: ""}
-          setLoading(false)
-          setMessages((prevMessages) => [...prevMessages, botMessage])
 
-          return reader.read().then(async function processText({ done, value }) {
+          return reader
+            .read()
+            .then(async function processText({ done, value }) {
+              setLoading(false);
               if (done) {
-                const finalMessages = [...updatedMessages, 
-                  {role: "assistant", content: result}
+                let lastMessage = messages[messages.length - 1];
+                console.log("last message: ", lastMessage);
+                const updatedMessages = [
+                  ...messages,
+                  newMessage,
+                  { ...lastMessage, content: result },
                 ];
-                await saveMessage(finalMessages);
+                await saveMessage(updatedMessages);
                 return result;
               }
               const text = decoder.decode(value || new Uint8Array(), {
@@ -112,12 +118,7 @@ export default function ChatBox() {
           color: "#e0e0e0",
         }}
       >
-        <h2
-          className="flex justify-center text-white text-2xl py-2 font-semibold shadow-md bg-gradient-to-r from-purple-600 to-purple-800 rounded-t-lg"
-    
-          
-          
-        >
+        <h2 className="flex justify-center text-white text-2xl py-2 font-semibold shadow-md bg-gradient-to-r from-purple-600 to-purple-800 rounded-t-lg">
           Need professor insights? Just ask!
         </h2>
         <Box
@@ -136,7 +137,7 @@ export default function ChatBox() {
               {messages.map((message, index) => (
                 <MessageBubble
                   message={message}
-                  loading={loading && index === messages.length - 1 && message.role === 'assistant'}
+                  loading={loading && index === messages.length - 1}
                   key={index}
                 />
               ))}
