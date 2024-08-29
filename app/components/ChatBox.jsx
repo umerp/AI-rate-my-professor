@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 // import { useUser } from "@clerk/nextjs";
-import { Container, Paper, Typography, Box } from "@mui/material";
+import { Container, Paper, Box } from "@mui/material";
 import MessageBubble from "./MessageBubble";
 import MessageInput from "./MessageInput";
 import Loader from "./Loader";
 import { fetchChatHistory, saveMessage } from "../services/chatService";
 
-export default function Chatbox({ session }) {
+export default function Chatbox() {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);

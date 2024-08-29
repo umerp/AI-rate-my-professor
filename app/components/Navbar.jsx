@@ -2,8 +2,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { IconButton, Menu, MenuItem } from "@mui/material";
-import SignOut from './SignOut'
-import SignIn from './SignIn'
 
 export default function Navbar({ session }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -48,12 +46,12 @@ export default function Navbar({ session }) {
                 }}
               >
                 <MenuItem type="submit">
-                  <SignOut closeAnchor={handleClose}/>
+                 
                 </MenuItem>
               </Menu>
             </div>
           ) : (
-            <SignIn />
+            <p></p>
           )}
         </div>
       </div>
