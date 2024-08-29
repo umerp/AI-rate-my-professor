@@ -111,14 +111,14 @@ export default function Chatbox({ session }) {
           color: "#e0e0e0",
         }}
       >
-        <Typography
-          className="text-white py-2 font-semibold shadow-md bg-gradient-to-r from-purple-600 to-purple-800 rounded-t-lg"
-          variant="h5"
-          align="center"
-          gutterBottom
+        <h2
+          className="flex justify-center text-white text-2xl py-2 font-semibold shadow-md bg-gradient-to-r from-purple-600 to-purple-800 rounded-t-lg"
+    
+          
+          
         >
           Need professor insights? Just ask!
-        </Typography>
+        </h2>
         <Box
           className="flex flex-col justify flex-grow overflow-y-auto mb-4 bg-gray-900 p-3 rounded-lg"
           style={{

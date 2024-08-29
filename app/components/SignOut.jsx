@@ -9,7 +9,7 @@ export default function SignOut({ closeAnchor }) {
   return (
     <button
       type="submit"
-      className="text-lg font-medium  rounded-lg p-2 transition-all cursor-pointer"
+      className="text-md font-medium  rounded-lg p-2 transition-all cursor-pointer"
       onClick={handleLogout}
     >
       Logout{" "}
