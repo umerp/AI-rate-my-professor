@@ -70,7 +70,9 @@ export default function ChatBox() {
 
           return reader.read().then(async function processText({ done, value }) {
               if (done) {
-                const finalMessages = [...updatedMessages, botMessage];
+                const finalMessages = [...updatedMessages, 
+                  {role: "assistant", content: result}
+                ];
                 await saveMessage(finalMessages);
                 return result;
               }
