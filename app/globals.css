@@ -10,3 +10,26 @@
   height: 100vh; 
   width: 100%;
 }
+
+.custom-signin-button {
+  background-color: #ff6347; /* Bright red color */
+  color: white; /* White text for contrast */
+  padding: 12px 24px; /* More padding for larger button */
+  border: none; /* No border */
+  border-radius: 8px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 18px; /* Larger text */
+  font-weight: bold; /* Bold text */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effects */
+}
+
+.custom-signin-button:hover {
+  background-color: #e5533d; /* Slightly darker red on hover */
+  transform: translateY(-2px); /* Lift effect */
+}
+
+.custom-signin-button:focus {
+  outline: none; /* Remove default focus outline */
+  box-shadow: 0 0 0 4px rgba(255, 99, 71, 0.5); /* Focus outline with red color */
+}
