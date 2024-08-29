@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 // import { useUser } from "@clerk/nextjs";
 import { Container, Paper, Typography, Box } from "@mui/material";
 import MessageBubble from "./MessageBubble";
@@ -12,6 +12,14 @@ export default function Chatbox({ session }) {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
+  const bottomRef = useRef(null); 
+
+  useEffect(() => {
+    // Scroll to the bottom (latest message)
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -131,6 +139,7 @@ export default function Chatbox({ session }) {
                   key={index}
                 />
               ))}
+              <div ref={bottomRef} />
             </>
           )}
         </Box>
