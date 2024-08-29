@@ -1,25 +1,34 @@
 import React from "react";
-import { Paper, Grid, ListItemText } from "@mui/material";
+import { Box } from "@mui/material";
+import Loader from "./Loader";
 
-export default function MessageBubble({ message }) {
+export default function MessageBubble({ message, loading }) {
+  if(!message.content){
+    return null;
+  }
+  const formattedContent = message.content.replace(/\*\*/g, "");
+
   return (
-    <Grid
-      container
-      spacing={2}
-      justifyContent={message.type === "user" ? "flex-end" : "flex-start"}
-    >
-      <Grid item xs={12} sm={8}>
-        <Paper
-          style={{
-            padding: "0.5rem 1rem",
-            backgroundColor: message.type === "user" ? "#1976d2" : "#ece7e7",
-            color: message.type === "user" ? "#ffffff" : "#000",
-            borderRadius: "20px",
-          }}
+        <Box
+          display="flex"
+          justifyContent={
+            message.role === "assistant" ? "flex-start" : "flex-end"
+          }
+          mb={1}
         >
-          <ListItemText primary={message.text} />
-        </Paper>
-      </Grid>
-    </Grid>
+          <Box
+            px={3}
+            py={2}
+            borderRadius="16px"
+            className="whitespace-pre-wrap"
+            style={{
+              backgroundColor:
+                message.role === "assistant" ? "#3f51b5" : "#673ab7",
+              color: "#ffffff",
+            }}
+          >
+            {loading ? <Loader /> : formattedContent}
+          </Box>
+        </Box>
   );
 }
