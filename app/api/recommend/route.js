@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Pinecone } from "@pinecone-database/pinecone";
 import OpenAI from "openai";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 
 export async function POST(req) {
   const { userId } = auth();
@@ -16,14 +16,11 @@ export async function POST(req) {
   const { query } = await req.json();
 
   try {
-    // Initialize Pinecone
     const pc = new Pinecone({ apiKey: process.env.PINECONE_API_KEY });
     const index = pc.index("rag").namespace("ns1");
 
-    // Initialize OpenAI client
     const openai = new OpenAI();
 
-    // Create embeddings for the  query
     const embedding = await openai.embeddings.create({
       model: 'text-embedding-3-small',
       input: query,
@@ -37,12 +34,21 @@ export async function POST(req) {
       vector: embedding.data[0].embedding,
     });
 
-    // Prepare the response
+
     const topMatches = results.matches.map((match) => ({
       professor: match.id,
-      review: match.metadata.review,
-      subject: match.metadata.subject,
-      stars: match.metadata.stars,
+      professor_name: match.metadata.professor_name,
+      school_name: match.metadata.school_name,
+      department_name: match.metadata.department_name,
+      star_rating: match.metadata.star_rating,
+      difficulty: match.metadata.difficulty,
+      tags: match.metadata.tags,
+      comment: match.metadata.comment,
+      take_again: match.metadata.take_again,
+      attendance: match.metadata.attendance,
+      for_credit: match.metadata.for_credit,
+      grade: match.metadata.grade,
+      post_date: match.metadata.post_date,
     }));
 
     return NextResponse.json(

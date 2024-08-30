@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Pinecone } from "@pinecone-database/pinecone";
 import OpenAI from "openai";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { scrapeProfessorData } from "../../utils/scraper";
 
 export async function POST(req) {
@@ -17,36 +17,42 @@ export async function POST(req) {
   const { url } = await req.json();
 
   try {
-    // Scrape the data using the scrapeProfessorData function
     const reviews = await scrapeProfessorData(url);
 
-    // Initialize Pinecone
     const pc = new Pinecone({ apiKey: process.env.PINECONE_API_KEY });
     const index = pc.index("rag").namespace("ns1");
 
-    // Initialize OpenAI client
     const openai = new OpenAI();
 
     const processedData = [];
     for (const review of reviews) {
       const embedding = await openai.embeddings.create({
-        model: 'text-embedding-3-small',
+        model: "text-embedding-3-small",
         input: review.review,
-        encoding_format: 'float',
+        encoding_format: "float",
       });
 
       processedData.push({
         values: embedding.data[0].embedding,
         id: `professor-${Date.now()}`,
         metadata: {
-          review: review.review,
-          subject: review.subject,
-          stars: review.stars,
+          professor_name: match.metadata.professor_name,
+          school_name: match.metadata.school_name,
+          department_name: match.metadata.department_name,
+          star_rating: match.metadata.star_rating,
+          difficulty: match.metadata.difficulty,
+          tags: match.metadata.tags,
+          comment: match.metadata.comment,
+          take_again: match.metadata.take_again,
+          attendance: match.metadata.attendance,
+          for_credit: match.metadata.for_credit,
+          grade: match.metadata.grade,
+          post_date: match.metadata.post_date,
         },
       });
     }
 
-    // Insert the embeddings into the Pinecone index
+
     const upsert_response = await index.upsert({
       vectors: processedData,
     });
