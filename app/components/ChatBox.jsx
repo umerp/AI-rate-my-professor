@@ -6,6 +6,11 @@ import MessageInput from "./MessageInput";
 import Loader from "./Loader";
 import { fetchChatHistory, saveMessage } from "../services/chatService";
 import { UserButton } from "@clerk/nextjs";
+import {
+  isValidURL,
+  handleScrapeUrl,
+  handleSearchQuery,
+} from "../utils/chatbox-utils";
 
 export default function ChatBox() {
   const [messages, setMessages] = useState([]);
@@ -32,7 +37,7 @@ export default function ChatBox() {
         setMessages([
           {
             role: "assistant",
-            content: `Hi! I'm the Rate My Professor support assistant. How can I help you today?`,
+            content: `Welcome! 🎓 I'm your ProfsRated Support Assistant. I'm here to help you find the best insights on professors and courses. To get started, could you please tell me which school you're interested in exploring?`,
           },
         ]);
       }
@@ -42,16 +47,26 @@ export default function ChatBox() {
   }, []);
 
   const sendMessage = async () => {
-    if (message.trim()) {
-      setMessage("");
-      const newMessage = { role: "user", content: message };
+    const trimmedMessage = message.trim();
+    if (trimmedMessage) {
+      const newMessage = { role: "user", content: trimmedMessage };
       const updatedMessages = [
         ...messages,
         newMessage,
         { role: "assistant", content: " " },
       ];
       setMessages(updatedMessages);
+      setMessage("");
       setLoading(true);
+
+      // Check if the message is a URL for scraping
+      if (isValidURL(trimmedMessage)) {
+        await handleScrapeUrl(trimmedMessage);
+        return;
+      }
+
+      // Otherwise, treat it as a search query
+      await handleSearchQuery(trimmedMessage);
 
       try {
         let result = "";
@@ -62,7 +77,7 @@ export default function ChatBox() {
           },
           body: JSON.stringify([
             ...messages,
-            { role: "user", content: message },
+            { role: "user", content: trimmedMessage },
           ]),
         }).then(async (res) => {
           const reader = res.body.getReader();

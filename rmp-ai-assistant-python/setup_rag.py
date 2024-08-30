@@ -3,7 +3,8 @@ load_dotenv()
 from pinecone import Pinecone, ServerlessSpec
 from openai import OpenAI
 import os
-import json
+import pandas as pd
+import concurrent.futures
 
 # Initialize Pinecone
 pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
@@ -15,35 +16,68 @@ pc.create_index(
     spec=ServerlessSpec(cloud="aws", region="us-east-1"),
 )
 # Load the review data
-data = json.load(open("reviews.json"))
-processed_data = []
+csv_file = 'RateMyProfessor_Sample data.csv'
+data = pd.read_csv(csv_file)
+data = data.fillna("")
+
 client = OpenAI()
 
-# Create embeddings for each review
-for review in data["reviews"]:
-    response = client.embeddings.create(
-        input=review['review'], model="text-embedding-3-small"
+batch_size = 100  # Process 100 rows at a time
+processed_data = []
+
+def generate_embedding(row):
+    # Combine relevant text fields into a single input string for embedding
+    review_text = f"Professor: {row['professor_name']}. School: {row['school_name']}. Department: {row['department_name']}. " \
+                f"Rating: {row['star_rating']}/5.0. Difficulty: {row['diff_index']}/5.0. Tags: {row['tag_professor']}. " \
+                f"Comment: {row['comments']}. Grades: {row['grades']}, Would Take Again: {row['would_take_agains']}"
+    
+    response =client.embeddings.create(
+        input=review_text, model="text-embedding-3-small"
     )
+
     embedding = response.data[0].embedding
-    processed_data.append(
-        {
-            "values": embedding,
-            "id": review["professor"],
-            "metadata":{
-                "review": review["review"],
-                "subject": review["subject"],
-                "stars": review["stars"],
-            }
+    return {
+        "values": embedding,
+        "id": f"professor-{row.name}",
+        "metadata": {
+            "professor_name": row['professor_name'],
+            "school_name": row['school_name'],
+            "department_name": row['department_name'],
+            "star_rating": row['star_rating'],
+            "difficulty": row['diff_index'],
+            "tags": row['tag_professor'],
+            "comment": row['comments'],
+            "take_again": row['would_take_agains'],
+            "attendance": row['attence'],
+            "for_credit": row['for_credits'],
+            "grade": row['grades'],
+            "post_date": row['post_date']
         }
-    )
+    }
+    
 
-# Insert the embeddings into the Pinecone index
-index = pc.Index("rag")
-upsert_response = index.upsert(
-    vectors=processed_data,
-    namespace="ns1",
-)
-print(f"Upserted count: {upsert_response['upserted_count']}")
+def process_batch(batch):
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        results = list(executor.map(generate_embedding, [row for _, row in batch.iterrows()]))
+    return results
 
-# Print index statistics
-print(index.describe_index_stats())
+def main():
+    # Split data into batches
+    for start in range(0, len(data), batch_size):
+        batch = data.iloc[start:start + batch_size]
+        processed_batch = process_batch(batch)
+        processed_data.extend(processed_batch)
+
+        # Upsert batch into Pinecone
+        index = pc.Index("rag")
+        upsert_response = index.upsert(
+            vectors=processed_batch,
+            namespace="ns1",
+        )
+        print(f"Upserted count for batch {start // batch_size + 1}: {upsert_response['upserted_count']}")
+
+    # Print index statistics
+    print(index.describe_index_stats())
+
+# Run the main function
+main()
