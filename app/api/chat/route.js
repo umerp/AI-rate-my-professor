@@ -49,11 +49,19 @@ export async function POST(req) {
   let resultString = "";
   results.matches.forEach((match) => {
     resultString += `\n
-        Professor: ${match.id}
-        Review: ${match.metadata.review}
-        Subject: ${match.metadata.subject}
-        Stars: ${match.metadata.stars}
-        \n\n
+        Professor: ${match.metadata.professor_name}
+      School: ${match.metadata.school_name}
+      Department: ${match.metadata.department_name}
+      Rating: ${match.metadata.star_rating}/5.0
+      Difficulty: ${match.metadata.difficulty}/5.0
+      Tags: ${match.metadata.tags}
+      Comment: ${match.metadata.comment}
+      Would Take Again: ${match.metadata.take_again}
+      Attendance: ${match.metadata.attendance}
+      For Credit: ${match.metadata.for_credit}
+      Grade: ${match.metadata.grade}
+      Post Date: ${match.metadata.post_date}
+      \n\n
         `;
   });
 
