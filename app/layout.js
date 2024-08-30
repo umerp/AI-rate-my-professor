@@ -13,7 +13,12 @@ export default async function RootLayout({ children }) {
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={inter.className}>{children}</body>
+        <body className={inter.className}>
+          {children}
+          <footer className="w-full py-2 text-center bg-black text-gray-400">
+            <p>&copy; 2024 ProfsRated AI. All rights reserved.</p>
+          </footer>
+        </body>
       </html>
     </ClerkProvider>
   );

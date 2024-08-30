@@ -32,7 +32,7 @@ export default function ChatBox() {
         setMessages([
           {
             role: "assistant",
-            content: `Hi! I'm the Rate My Professor support assistant. How can I help you today?`,
+            content: `Hi! I'm the ProfsRated AI, your rate my professor support assistant. How can I help you today?`,
           },
         ]);
       }
@@ -107,7 +107,7 @@ export default function ChatBox() {
   };
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" >
       <Paper
         elevation={3}
         style={{
